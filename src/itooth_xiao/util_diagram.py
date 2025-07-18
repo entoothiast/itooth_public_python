@@ -19,6 +19,7 @@ class Data:
     U_CE_CONNECTOR_V: list[float]
     U_CE_CONNECTOR_connected: list[str]
     U_BATT_V: list[float]
+    U_BATT_LOW: list[str]
 
 
 NAMES_FLOAT = (
@@ -35,6 +36,7 @@ NAMES_STR = (
     "I_LEAK_OVL",
     "U_CE_WE_OVL",
     "U_CE_CONNECTOR_connected",
+    "U_BATT_LOW",
 )
 
 
@@ -95,7 +97,13 @@ def diagram(data: Data, show: bool, filename: pathlib.Path | None, dpi=600) -> N
             )
 
     axs[ax_current].set_ylabel("Current [nA]")
-    axs[ax_current].set_ylim(-100, 1000)
+
+    ymin_soft, ymax_soft = -100, 1000
+    ymin = min(ymin_soft, min(data.I_SENSE_nA))
+    ymax = max(ymax_soft, max(data.I_SENSE_nA))
+    axs[ax_current].set_ylim(ymin, ymax)
+
+    # axs[ax_current].set_ylim(-100, 1000)
     # axs[ax_current].legend()
     handles_current = [
         mlines.Line2D([], [], color="green", label="I_SENSE_nA"),
@@ -126,31 +134,45 @@ def diagram(data: Data, show: bool, filename: pathlib.Path | None, dpi=600) -> N
                 markersize=4,
                 **highlight_kwargs,
             )
+    # axs[ax_voltage].plot(
+    #     data.mono_s,
+    #     data.U_CE_CONNECTOR_V,
+    #     label="U_CE_CONNECTOR_V",
+    #     linestyle="--",
+    #     color="orange",
+    # )
+    # for i in range(len(data.mono_s)):
+    #     if data.U_CE_CONNECTOR_connected[i] != "":
+    #         axs[ax_voltage].plot(
+    #             data.mono_s[i],
+    #             data.U_CE_CONNECTOR_V[i],
+    #             marker="o",
+    #             markersize=4,
+    #             **highlight_kwargs,
+    #        )
+
     axs[ax_voltage].plot(
         data.mono_s,
-        data.U_CE_CONNECTOR_V,
-        label="U_CE_CONNECTOR_V",
-        linestyle="--",
+        data.U_BATT_V,
+        label="U_BATT_V",
+        linestyle=":",
         color="orange",
     )
     for i in range(len(data.mono_s)):
-        if data.U_CE_CONNECTOR_connected[i] != "":
+        if data.U_BATT_LOW[i] != "":
             axs[ax_voltage].plot(
                 data.mono_s[i],
-                data.U_CE_CONNECTOR_V[i],
+                data.U_BATT_V[i],
                 marker="o",
                 markersize=4,
                 **highlight_kwargs,
             )
-    axs[ax_voltage].plot(
-        data.mono_s, data.U_BATT_V, label="U_BATT_V", linestyle=":", color="orange"
-    )
     axs[ax_voltage].set_ylabel("Voltage [V]")
     # axs[ax_voltage].set_ylim(-2, 5)
     axs[ax_voltage].set_yticks(np.arange(-2, 5, 1.0))
     handles_voltage = [
         mlines.Line2D([], [], color="green", label="U_CE_WE_V"),
-        mlines.Line2D([], [], color="orange", linestyle="--", label="U_CE_CONNECTOR_V"),
+        # mlines.Line2D([], [], color="orange", linestyle="--", label="U_CE_CONNECTOR_V"),
         mlines.Line2D([], [], color="orange", linestyle=":", label="U_BATT_V"),
         error_marker,
     ]
@@ -184,9 +206,8 @@ def diagram(data: Data, show: bool, filename: pathlib.Path | None, dpi=600) -> N
 
     # plt.tight_layout()
     plt.tight_layout()
-
     if show:
         plt.show()
-
     if filename is not None:
+        print(f"Diagram: {filename}")
         fig.savefig(filename, dpi=dpi)
