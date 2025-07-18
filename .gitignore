@@ -1,0 +1,8 @@
+**/fp-info-cache
+**/*-backups/*.zip
+**/*_gitignore*
+**/*.FCBak
+**/__pycache__
+**/*_project_library.bak
+**/backups/*.zip
+**/*.png
