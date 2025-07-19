@@ -5,4 +5,5 @@
 **/__pycache__
 **/*_project_library.bak
 **/backups/*.zip
-**/*.png
+sample_dp_files/**/*.png
+**/.mypy_cache/

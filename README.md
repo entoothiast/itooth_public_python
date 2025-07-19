@@ -1,5 +1,7 @@
 # Python software for itooth_xiao_v0.1
 
+![](README_images/dp_yyyymmdd-hhmm_0aff_add-comment.png)
+
 ## How to run
 
 ### Install `uv` (https://docs.astral.sh/uv/)
