@@ -1,6 +1,6 @@
-boot,serial,U_SENS_interval_s
+boot,version_sw,sn
 dp,mono_s,temperature_C,I_SENSE_nA,I_SENSE_OVL,I_LEAK_nA,I_LEAK_OVL,U_CE_WE_V,U_CE_WE_OVL,U_CE_CONNECTOR_connected,U_CE_CONNECTOR_V,U_BATT_V,U_BATT_LOW
-boot,0a48,0.016
+boot,v0.1.0,0a48
 dp,5.016,25.3,16.1,ovl,-5.2,,0.070,,,0.031,0.859,
 dp,6.018,25.4,16.6,ovl,-5.5,,0.080,,,0.051,0.959,
 dp,7.016,25.3,16.1,ovl,-5.2,,0.070,,,0.031,0.859,
