@@ -204,6 +204,9 @@ def diagram(data: Data, show: bool, filename: pathlib.Path | None, dpi=600) -> N
     #     frameon=False
     # )
 
+    if filename is not None:
+        fig.suptitle(filename.stem, fontsize=10)
+
     # plt.tight_layout()
     plt.tight_layout()
     if show:
