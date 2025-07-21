@@ -83,8 +83,10 @@ def render(
             print(f"Diagram: {png_filename}")
             file_csv_compound = util_csv.FileCsvCompound.factory(csv_filename)
             data = util_dp_diagram.read_data(file_csv_compound=file_csv_compound)
+            time_s = util_csv.parse_time(file_csv_compound)
             util_diagram.diagram(
                 data=data,
+                time_s=time_s,
                 show=show,
                 filename=None if show else png_filename,
                 dpi=dpi,

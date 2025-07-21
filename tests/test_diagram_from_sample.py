@@ -38,12 +38,13 @@ def get_sample_data() -> Data:
         U_CE_CONNECTOR_V=U_CE_CONNECTOR_V.tolist(),
         U_CE_CONNECTOR_connected=U_CE_CONNECTOR_connected.tolist(),
         U_BATT_V=U_BATT_V.tolist(),
+        U_BATT_LOW=[],
     )
 
 
 def test_diagram():
     data = get_sample_data()
-    diagram(data=data, show=True, filename=None)
+    diagram(data=data, time_s=0.0, show=True, filename=None)
     # main(data=data, show=False, filename=pathlib.Path(__file__).with_suffix(".png"))
 
 
