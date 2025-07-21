@@ -1,6 +1,8 @@
 import dataclasses
+import datetime
 import pathlib
 
+import matplotlib.dates as mdates
 import matplotlib.lines as mlines
 import matplotlib.pyplot as plt
 import numpy as np
@@ -40,7 +42,9 @@ NAMES_STR = (
 )
 
 
-def diagram(data: Data, show: bool, filename: pathlib.Path | None, dpi=600) -> None:
+def diagram(
+    data: Data, time_s: float, show: bool, filename: pathlib.Path | None, dpi=600
+) -> None:
     # Plot
     fig, axs = plt.subplots(
         3,
@@ -56,6 +60,7 @@ def diagram(data: Data, show: bool, filename: pathlib.Path | None, dpi=600) -> N
 
     highlight_kwargs = {"color": "red", "linewidth": 2.0}
 
+    list_time_s = [t + time_s for t in data.mono_s]
     error_marker = mlines.Line2D(
         [],
         [],
@@ -68,28 +73,32 @@ def diagram(data: Data, show: bool, filename: pathlib.Path | None, dpi=600) -> N
 
     # 1. Plot: Currents
     axs[ax_current].plot(
-        data.mono_s,
+        list_time_s,
         data.I_SENSE_nA,
         label="I_SENSE_nA",
         color="green",
         linewidth=2,
     )
-    for i in range(len(data.mono_s)):
+    for i in range(len(list_time_s)):
         if data.I_SENSE_OVL[i] != "":
             axs[ax_current].plot(
-                data.mono_s[i],
+                list_time_s[i],
                 data.I_SENSE_nA[i],
                 marker="o",
                 markersize=4,
                 **highlight_kwargs,
             )
     axs[ax_current].plot(
-        data.mono_s, data.I_LEAK_nA, label="I_LEAK_nA", linestyle="--", color="orange"
+        list_time_s,
+        data.I_LEAK_nA,
+        label="I_LEAK_nA",
+        linestyle="--",
+        color="orange",
     )
-    for i in range(len(data.mono_s)):
+    for i in range(len(list_time_s)):
         if data.I_LEAK_OVL[i] != "":
             axs[ax_current].plot(
-                data.mono_s[i],
+                list_time_s[i],
                 data.I_LEAK_nA[i],
                 marker="o",
                 markersize=4,
@@ -123,28 +132,28 @@ def diagram(data: Data, show: bool, filename: pathlib.Path | None, dpi=600) -> N
 
     # 2. Plot: Voltages
     axs[ax_voltage].plot(
-        data.mono_s, data.U_CE_WE_V, label="U_CE_WE_V", color="green", linewidth=2
+        list_time_s, data.U_CE_WE_V, label="U_CE_WE_V", color="green", linewidth=2
     )
-    for i in range(len(data.mono_s)):
+    for i in range(len(list_time_s)):
         if data.U_CE_WE_OVL[i] != "":
             axs[ax_voltage].plot(
-                data.mono_s[i],
+                list_time_s[i],
                 data.U_CE_WE_V[i],
                 marker="o",
                 markersize=4,
                 **highlight_kwargs,
             )
     # axs[ax_voltage].plot(
-    #     data.mono_s,
+    #     list_time_s,
     #     data.U_CE_CONNECTOR_V,
     #     label="U_CE_CONNECTOR_V",
     #     linestyle="--",
     #     color="orange",
     # )
-    # for i in range(len(data.mono_s)):
+    # for i in range(len(list_time_s)):
     #     if data.U_CE_CONNECTOR_connected[i] != "":
     #         axs[ax_voltage].plot(
-    #             data.mono_s[i],
+    #             list_time_s[i],
     #             data.U_CE_CONNECTOR_V[i],
     #             marker="o",
     #             markersize=4,
@@ -152,16 +161,16 @@ def diagram(data: Data, show: bool, filename: pathlib.Path | None, dpi=600) -> N
     #        )
 
     axs[ax_voltage].plot(
-        data.mono_s,
+        list_time_s,
         data.U_BATT_V,
         label="U_BATT_V",
         linestyle=":",
         color="orange",
     )
-    for i in range(len(data.mono_s)):
+    for i in range(len(list_time_s)):
         if data.U_BATT_LOW[i] != "":
             axs[ax_voltage].plot(
-                data.mono_s[i],
+                list_time_s[i],
                 data.U_BATT_V[i],
                 marker="o",
                 markersize=4,
@@ -188,7 +197,7 @@ def diagram(data: Data, show: bool, filename: pathlib.Path | None, dpi=600) -> N
 
     # 2. Plot: Temperatur
     axs[ax_temperature].plot(
-        data.mono_s, data.temperature_C, linestyle="--", color="orange"
+        list_time_s, data.temperature_C, linestyle="--", color="orange"
     )
     axs[ax_temperature].set_ylabel("Temperature [C]")
     # axs[ax_temperature].set_ylim(10, 40)
@@ -203,6 +212,16 @@ def diagram(data: Data, show: bool, filename: pathlib.Path | None, dpi=600) -> N
     #     ncol=1,
     #     frameon=False
     # )
+
+    if time_s > 1.0:
+        # Format x-axis as HH:MM:SS
+        def seconds_to_time_str(seconds):
+            return datetime.datetime.utcfromtimestamp(seconds).strftime("%H:%M:%S")
+
+        axs[-1].set_xticks(list_time_s)
+        axs[-1].set_xticklabels(
+            [seconds_to_time_str(t) for t in list_time_s], rotation=45, ha="right"
+        )
 
     if filename is not None:
         fig.suptitle(filename.stem, fontsize=10)
