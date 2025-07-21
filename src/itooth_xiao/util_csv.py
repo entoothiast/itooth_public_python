@@ -14,6 +14,8 @@ dp_20250718-1805_0aff_hans-im-glueck
 
 
 def parse_time(filename: pathlib.Path) -> float:
+    assert isinstance(filename, pathlib.Path)
+
     match_filename = RE_FILENAME.match(filename.stem)
     if match_filename is None:
         return 0.0
