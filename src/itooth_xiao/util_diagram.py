@@ -5,6 +5,7 @@ import pathlib
 import matplotlib.dates as mdates
 import matplotlib.lines as mlines
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 import numpy as np
 
 
@@ -72,10 +73,13 @@ def diagram(
     )
 
     # 1. Plot: Currents
+    # electrochemistry engineers like it inverted
+    I_SENSE_nA_inverted = [-x for x in data.I_SENSE_nA]
+
     axs[ax_current].plot(
         list_time_s,
-        data.I_SENSE_nA,
-        label="I_SENSE_nA",
+        I_SENSE_nA_inverted,
+        # label="-I_SENSE_nA",  # electrochemistry engineers like it this way, therefore -
         color="green",
         linewidth=2,
     )
@@ -83,7 +87,7 @@ def diagram(
         if data.I_SENSE_OVL[i] != "":
             axs[ax_current].plot(
                 list_time_s[i],
-                data.I_SENSE_nA[i],
+                I_SENSE_nA_inverted[i],
                 marker="o",
                 markersize=4,
                 **highlight_kwargs,
@@ -107,15 +111,17 @@ def diagram(
 
     axs[ax_current].set_ylabel("Current [nA]")
 
-    ymin_soft, ymax_soft = -100, 1000
-    ymin = min(ymin_soft, min(data.I_SENSE_nA))
-    ymax = max(ymax_soft, max(data.I_SENSE_nA))
+    ymin_soft, ymax_soft = -(-100), -(1000)
+    ymin = min(ymin_soft, min(I_SENSE_nA_inverted))
+    ymax = max(ymax_soft, max(I_SENSE_nA_inverted))
     axs[ax_current].set_ylim(ymin, ymax)
 
     # axs[ax_current].set_ylim(-100, 1000)
     # axs[ax_current].legend()
     handles_current = [
-        mlines.Line2D([], [], color="green", label="I_SENSE_nA"),
+        mlines.Line2D(
+            [], [], color="green", label="- I_SENSE_nA"
+        ),  # electrochemistry engineers like it this way, therefore -
         mlines.Line2D([], [], color="orange", linestyle="--", label="I_LEAK_nA"),
         error_marker,
     ]
@@ -213,15 +219,36 @@ def diagram(
     #     frameon=False
     # )
 
-    if time_s > 1.0:
-        # Format x-axis as HH:MM:SS
-        def seconds_to_time_str(seconds):
-            return datetime.datetime.utcfromtimestamp(seconds).strftime("%H:%M:%S")
+    def auto_time_ticks(ax, time_data, max_ticks=30):
+        time_range_s = max(time_data) - min(time_data)
+        intervals = [
+            60,
+            300,
+            600,
+            900,
+            1800,
+            3600,
+        ]  # 1min, 5min, 10min, 15min, 30min, 1h
+        for interval_s in intervals:
+            if time_range_s <= max_ticks * interval_s:
+                break
+        else:
+            interval_s = intervals[-1]  # Fallback: größtes Intervall
 
-        axs[-1].set_xticks(list_time_s)
-        axs[-1].set_xticklabels(
-            [seconds_to_time_str(t) for t in list_time_s], rotation=45, ha="right"
+        start = (min(time_data) // interval_s) * interval_s
+        end = (max(time_data) // interval_s + 1) * interval_s
+        ticks = range(int(start), int(end), interval_s)
+
+        ax.set_xticks(ticks)
+        ax.set_xticklabels(
+            [datetime.datetime.utcfromtimestamp(t).strftime("%H:%M") for t in ticks],
+            rotation=90,
+            ha="center",
         )
+
+    if time_s > 1.0:
+        time_data = axs[-1].get_xticks()  # Aktuelle Tick-Positionen (in Sekunden)
+        auto_time_ticks(axs[-1], time_data)
 
     if filename is not None:
         fig.suptitle(filename.stem, fontsize=10)
