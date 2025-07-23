@@ -111,7 +111,7 @@ def diagram(
 
     axs[ax_current].set_ylabel("Current [nA]")
 
-    ymin_soft, ymax_soft = -(-100), -(1000)
+    ymin_soft, ymax_soft = -100, 1000
     ymin = min(ymin_soft, min(I_SENSE_nA_inverted))
     ymax = max(ymax_soft, max(I_SENSE_nA_inverted))
     axs[ax_current].set_ylim(ymin, ymax)
@@ -241,14 +241,13 @@ def diagram(
 
         ax.set_xticks(ticks)
         ax.set_xticklabels(
-            [datetime.datetime.utcfromtimestamp(t).strftime("%H:%M") for t in ticks],
+            [datetime.datetime.fromtimestamp(t).strftime("%H:%M") for t in ticks],
             rotation=90,
             ha="center",
         )
 
     if time_s > 1.0:
-        time_data = axs[-1].get_xticks()  # Aktuelle Tick-Positionen (in Sekunden)
-        auto_time_ticks(axs[-1], time_data)
+        auto_time_ticks(axs[-1], list_time_s)
 
     if filename is not None:
         fig.suptitle(filename.stem, fontsize=10)
