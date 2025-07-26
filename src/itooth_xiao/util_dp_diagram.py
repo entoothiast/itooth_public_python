@@ -13,12 +13,16 @@ def read_data(file_csv_compound: util_csv.FileCsvCompound) -> util_diagram.Data:
             name: str,
             func_convert: Callable[[str], str | float],
         ) -> None:
-            text = line.cols[name]
-            value = func_convert(text)
             values = vargs.get(name, None)
             if values is None:
                 values = []
                 vargs[name] = values
+
+            text = line.cols.get(name, None)
+            if text is None:
+                return
+            value = func_convert(text)
+
             values.append(value)
             # getattr(data, name).append(value)
 

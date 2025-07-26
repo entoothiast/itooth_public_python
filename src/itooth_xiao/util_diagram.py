@@ -23,6 +23,9 @@ class Data:
     U_CE_CONNECTOR_connected: list[str]
     U_BATT_V: list[float]
     U_BATT_LOW: list[str]
+    temp_a_C: list[float]
+    temp_b_C: list[float]
+    temp_c_C: list[float]
 
 
 NAMES_FLOAT = (
@@ -33,6 +36,9 @@ NAMES_FLOAT = (
     "temperature_C",
     "U_CE_CONNECTOR_V",
     "U_BATT_V",
+    "temp_a_C",
+    "temp_b_C",
+    "temp_c_C",
 )
 NAMES_STR = (
     "I_SENSE_OVL",
@@ -202,9 +208,20 @@ def diagram(
     axs[ax_voltage].grid(True)
 
     # 2. Plot: Temperatur
-    axs[ax_temperature].plot(
-        list_time_s, data.temperature_C, linestyle="--", color="orange"
-    )
+    for temp_C, linestyle, color in (
+        (data.temperature_C, "--", "orange"),
+        (data.temp_a_C, "dotted", "blue"),
+        (data.temp_b_C, "dotted", "violet"),
+        (data.temp_c_C, "dotted", "cyan"),
+    ):
+        if len(temp_C) > 0:
+            axs[ax_temperature].plot(
+                list_time_s,
+                temp_C,
+                linestyle=linestyle,
+                color=color,
+            )
+
     axs[ax_temperature].set_ylabel("Temperature [C]")
     # axs[ax_temperature].set_ylim(10, 40)
     # axs[ax_temperature].legend()
