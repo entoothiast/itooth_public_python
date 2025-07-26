@@ -208,11 +208,11 @@ def diagram(
     axs[ax_voltage].grid(True)
 
     # 2. Plot: Temperatur
-    for temp_C, linestyle, color in (
-        (data.temp_cpu_C, "--", "orange"),
-        (data.temp_a_C, "dotted", "blue"),
-        (data.temp_b_C, "dotted", "violet"),
-        (data.temp_c_C, "dotted", "cyan"),
+    for temp_C, linestyle, color, label in (
+        (data.temp_cpu_C, "--", "orange", "CPU"),
+        (data.temp_a_C, "dotted", "blue", "A"),
+        (data.temp_b_C, "dotted", "violet", "B"),
+        (data.temp_c_C, "dotted", "cyan", "C"),
     ):
         if len(temp_C) > 0:
             axs[ax_temperature].plot(
@@ -220,11 +220,18 @@ def diagram(
                 temp_C,
                 linestyle=linestyle,
                 color=color,
+                label=label,
             )
 
     axs[ax_temperature].set_ylabel("Temperature [C]")
     # axs[ax_temperature].set_ylim(10, 40)
-    # axs[ax_temperature].legend()
+    axs[ax_temperature].legend(
+        loc="upper right",
+        frameon=True,
+        handletextpad=0.5,  # Abstand zwischen Linien und Text
+        labelspacing=0.3,  # Abstand zwischen den Labels (vertikal)
+        borderaxespad=0.3,  # Abstand zur Achse
+    )
     axs[ax_temperature].grid(True)
 
     # # Gemeinsame Legende unten hinzufügen
