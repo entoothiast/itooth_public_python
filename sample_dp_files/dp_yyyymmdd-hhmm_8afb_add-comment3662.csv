@@ -1,5 +1,5 @@
 boot,sn,version_sw
-dp,mono_s,temperature_C,I_SENSE_nA,I_SENSE_OVL,I_LEAK_nA,I_LEAK_OVL,U_CE_WE_V,U_CE_WE_OVL,U_CE_CONNECTOR_connected,U_CE_CONNECTOR_V,U_BATT_V,U_BATT_LOW
+dp,mono_s,temp_cpu_C,I_SENSE_nA,I_SENSE_OVL,I_LEAK_nA,I_LEAK_OVL,U_CE_WE_V,U_CE_WE_OVL,U_CE_CONNECTOR_connected,U_CE_CONNECTOR_V,U_BATT_V,U_BATT_LOW
 boot,8afb,v0.1.0
 dp,5.003,25.8,0.1,,-0.3,,-0.081,,,-0.004,4.091,
 dp,10.015,25.8,-0.1,,-1.3,,-0.080,,,-0.001,4.093,

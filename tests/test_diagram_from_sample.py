@@ -17,7 +17,7 @@ def get_sample_data() -> Data:
     U_CE_WE_OVL = np.full(10, "", dtype=object)
     U_CE_WE_OVL[5] = "ovl"
 
-    temperature_C = np.linspace(23, 24, 10)
+    temp_cpu_C = np.linspace(23, 24, 10)
 
     U_CE_CONNECTOR_V = np.linspace(0.1, 0.09, 10)
     U_CE_CONNECTOR_V[2] = 0.4
@@ -34,7 +34,10 @@ def get_sample_data() -> Data:
         I_LEAK_OVL=I_LEAK_OVL.tolist(),
         U_CE_WE_V=U_CE_WE_V.tolist(),
         U_CE_WE_OVL=U_CE_WE_OVL.tolist(),
-        temperature_C=temperature_C.tolist(),
+        temp_cpu_C=temp_cpu_C.tolist(),
+        temp_a_C=[],
+        temp_b_C=[],
+        temp_c_C=[],
         U_CE_CONNECTOR_V=U_CE_CONNECTOR_V.tolist(),
         U_CE_CONNECTOR_connected=U_CE_CONNECTOR_connected.tolist(),
         U_BATT_V=U_BATT_V.tolist(),

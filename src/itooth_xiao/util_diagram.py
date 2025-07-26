@@ -18,14 +18,14 @@ class Data:
     I_LEAK_OVL: list[str]
     U_CE_WE_V: list[float]
     U_CE_WE_OVL: list[str]
-    temperature_C: list[float]
+    temp_cpu_C: list[float]
+    temp_a_C: list[float]
+    temp_b_C: list[float]
+    temp_c_C: list[float]
     U_CE_CONNECTOR_V: list[float]
     U_CE_CONNECTOR_connected: list[str]
     U_BATT_V: list[float]
     U_BATT_LOW: list[str]
-    temp_a_C: list[float]
-    temp_b_C: list[float]
-    temp_c_C: list[float]
 
 
 NAMES_FLOAT = (
@@ -33,12 +33,12 @@ NAMES_FLOAT = (
     "I_SENSE_nA",
     "I_LEAK_nA",
     "U_CE_WE_V",
-    "temperature_C",
-    "U_CE_CONNECTOR_V",
-    "U_BATT_V",
+    "temp_cpu_C",
     "temp_a_C",
     "temp_b_C",
     "temp_c_C",
+    "U_CE_CONNECTOR_V",
+    "U_BATT_V",
 )
 NAMES_STR = (
     "I_SENSE_OVL",
@@ -209,7 +209,7 @@ def diagram(
 
     # 2. Plot: Temperatur
     for temp_C, linestyle, color in (
-        (data.temperature_C, "--", "orange"),
+        (data.temp_cpu_C, "--", "orange"),
         (data.temp_a_C, "dotted", "blue"),
         (data.temp_b_C, "dotted", "violet"),
         (data.temp_c_C, "dotted", "cyan"),
